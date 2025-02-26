@@ -2,6 +2,8 @@ package com.checkout.payment.gateway.util;
 
 public class Util {
 
+  public interface F<R> { R x(); }
+
   public static class Field<K, V> {
     public final K key;
     public final V value;

@@ -1,26 +1,48 @@
 package com.checkout.payment.gateway.model;
 
+import com.checkout.payment.gateway.util.Currency;
+import com.checkout.payment.gateway.validation.annotations.ValidCvv;
+import com.checkout.payment.gateway.validation.annotations.ValidPan;
+import com.checkout.payment.gateway.validation.annotations.ValidExpiryDate;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
+@ValidExpiryDate
 public class PostPaymentRequest implements Serializable {
 
-  @JsonProperty("card_number_last_four")
-  private int cardNumberLastFour;
+  public static final String INVALID_CARD_NUMBER = "Invalid card number";
+  public static final String INVALID_EXPIRY_DATE = "Invalid expiry date";
+  public static final String INVALID_CURRENCY = "Invalid currency";
+  public static final String INVALID_AMOUNT = "Invalid amount";
+  public static final String INVALID_CVV = "Invalid CVV";
+
+  @JsonProperty("card_number")
+  @ValidPan(message = INVALID_CARD_NUMBER)
+  private String cardNumber;
+
   @JsonProperty("expiry_month")
   private int expiryMonth;
+
   @JsonProperty("expiry_year")
   private int expiryYear;
-  private String currency;
-  private int amount;
-  private int cvv;
 
-  public int getCardNumberLastFour() {
-    return cardNumberLastFour;
+  @NotNull(message = INVALID_CURRENCY)
+  private Currency currency;
+
+  @NotNull(message = INVALID_AMOUNT)
+  private int amount;
+
+  @ValidCvv(message = INVALID_CVV)
+  private String cvv;
+
+  public String getCardNumber() {
+    return cardNumber;
   }
 
-  public void setCardNumberLastFour(int cardNumberLastFour) {
-    this.cardNumberLastFour = cardNumberLastFour;
+  public void setCardNumber(String cardNumber) {
+    this.cardNumber = cardNumber;
   }
 
   public int getExpiryMonth() {
@@ -39,12 +61,12 @@ public class PostPaymentRequest implements Serializable {
     this.expiryYear = expiryYear;
   }
 
-  public String getCurrency() {
+  public Currency getCurrency() {
     return currency;
   }
 
   public void setCurrency(String currency) {
-    this.currency = currency;
+    this.currency = Currency.getByAlpha(currency);
   }
 
   public int getAmount() {
@@ -55,15 +77,15 @@ public class PostPaymentRequest implements Serializable {
     this.amount = amount;
   }
 
-  public int getCvv() {
+  public String getCvv() {
     return cvv;
   }
 
-  public void setCvv(int cvv) {
+  public void setCvv(String cvv) {
     this.cvv = cvv;
   }
 
-  @JsonProperty("expiry_date")
+  @JsonIgnore
   public String getExpiryDate() {
     return String.format("%d/%d", expiryMonth, expiryYear);
   }
@@ -71,7 +93,7 @@ public class PostPaymentRequest implements Serializable {
   @Override
   public String toString() {
     return "PostPaymentRequest{" +
-        "cardNumberLastFour=" + cardNumberLastFour +
+        "cardNumber=" + cardNumber +
         ", expiryMonth=" + expiryMonth +
         ", expiryYear=" + expiryYear +
         ", currency='" + currency + '\'' +
