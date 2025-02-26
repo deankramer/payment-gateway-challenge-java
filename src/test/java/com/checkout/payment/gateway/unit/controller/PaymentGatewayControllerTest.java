@@ -1,6 +1,6 @@
-package com.checkout.payment.gateway.controller;
+package com.checkout.payment.gateway.unit.controller;
 
-
+import static com.checkout.payment.gateway.exception.CommonExceptionHandler.PAYMENT_NOT_FOUND;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -38,7 +38,7 @@ class PaymentGatewayControllerTest {
 
     paymentsRepository.add(payment);
 
-    mvc.perform(MockMvcRequestBuilders.get("/payment/" + payment.getId()))
+    mvc.perform(MockMvcRequestBuilders.get("/payments/" + payment.getId()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value(payment.getStatus().getName()))
         .andExpect(jsonPath("$.cardNumberLastFour").value(payment.getCardNumberLastFour()))
@@ -50,8 +50,8 @@ class PaymentGatewayControllerTest {
 
   @Test
   void whenPaymentWithIdDoesNotExistThen404IsReturned() throws Exception {
-    mvc.perform(MockMvcRequestBuilders.get("/payment/" + UUID.randomUUID()))
+    mvc.perform(MockMvcRequestBuilders.get("/payments/" + UUID.randomUUID()))
         .andExpect(status().isNotFound())
-        .andExpect(jsonPath("$.message").value("Page not found"));
+        .andExpect(jsonPath("$.messages").value(PAYMENT_NOT_FOUND));
   }
 }

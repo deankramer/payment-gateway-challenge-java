@@ -2,39 +2,38 @@ package com.checkout.payment.gateway.model;
 
 import com.checkout.payment.gateway.util.Currency;
 import com.checkout.payment.gateway.validation.annotations.ValidCvv;
+import com.checkout.payment.gateway.validation.annotations.ValidMonth;
 import com.checkout.payment.gateway.validation.annotations.ValidPan;
 import com.checkout.payment.gateway.validation.annotations.ValidExpiryDate;
+import com.checkout.payment.gateway.validation.annotations.ValidYear;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
-@ValidExpiryDate
+import static com.checkout.payment.gateway.model.PostPaymentRequest.INVALID_EXPIRY_DATE;
+
+@ValidExpiryDate(message = INVALID_EXPIRY_DATE)
 public class PostPaymentRequest implements Serializable {
 
-  public static final String INVALID_CARD_NUMBER = "Invalid card number";
+  public static final String INVALID = "invalid";
   public static final String INVALID_EXPIRY_DATE = "Invalid expiry date";
-  public static final String INVALID_CURRENCY = "Invalid currency";
-  public static final String INVALID_AMOUNT = "Invalid amount";
-  public static final String INVALID_CVV = "Invalid CVV";
 
-  @JsonProperty("card_number")
-  @ValidPan(message = INVALID_CARD_NUMBER)
+  @ValidPan(message = INVALID)
   private String cardNumber;
 
-  @JsonProperty("expiry_month")
+  @ValidMonth(message = INVALID)
   private int expiryMonth;
 
-  @JsonProperty("expiry_year")
+  @ValidYear(message = INVALID)
   private int expiryYear;
 
-  @NotNull(message = INVALID_CURRENCY)
+  @NotNull(message = INVALID)
   private Currency currency;
 
-  @NotNull(message = INVALID_AMOUNT)
+  @NotNull(message = INVALID)
   private int amount;
 
-  @ValidCvv(message = INVALID_CVV)
+  @ValidCvv(message = INVALID)
   private String cvv;
 
   public String getCardNumber() {

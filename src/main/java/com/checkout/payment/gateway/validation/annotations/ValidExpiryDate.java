@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = ExpiryDateValidator.class)
-@Target({ ElementType.TYPE })
+@Target({ElementType.FIELD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidExpiryDate {
   String message() default "Invalid expiry date";

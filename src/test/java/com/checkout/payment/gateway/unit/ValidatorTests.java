@@ -1,8 +1,6 @@
 package com.checkout.payment.gateway.unit;
 
-import static com.checkout.payment.gateway.model.PostPaymentRequest.INVALID_CARD_NUMBER;
-import static com.checkout.payment.gateway.model.PostPaymentRequest.INVALID_CVV;
-import static com.checkout.payment.gateway.model.PostPaymentRequest.INVALID_EXPIRY_DATE;
+import static com.checkout.payment.gateway.model.PostPaymentRequest.INVALID;
 import static jakarta.validation.Validation.buildDefaultValidatorFactory;
 import static java.time.LocalDate.now;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +31,7 @@ public class ValidatorTests {
   public void whenCardNumberIsValidatedInvalid(String cardNumber) {
     var violations = testCardNumber(cardNumber);
     assertEquals(1, violations.size());
-    assertEquals(INVALID_CARD_NUMBER, violations.iterator().next().getMessage());
+    assertEquals(INVALID, violations.iterator().next().getMessage());
   }
 
   @ParameterizedTest
@@ -48,7 +46,7 @@ public class ValidatorTests {
   public void whenCvvIsValidatedInvalid(String cvv) {
     var violations = testCvv(cvv);
     assertEquals(1, violations.size());
-    assertEquals(INVALID_CVV, violations.iterator().next().getMessage());
+    assertEquals(INVALID, violations.iterator().next().getMessage());
   }
 
   @ParameterizedTest
@@ -63,7 +61,7 @@ public class ValidatorTests {
   public void whenMonthIsValidatedInvalid(int month) {
     var violations = testMonth(month);
     assertEquals(1, violations.size());
-    assertEquals(INVALID_EXPIRY_DATE, violations.iterator().next().getMessage());
+    assertEquals(INVALID, violations.iterator().next().getMessage());
   }
 
   @ParameterizedTest
