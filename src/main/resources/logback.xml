@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+  <property name="PRUDENT" value="false"/>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <prudent>${PRUDENT}</prudent>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <charset>UTF-8</charset>
+      <Pattern>%d{ISO8601} CR="%X{cr}" LN="%logger{10}" TY="%X{ty}" MD="%X{mthd}" ST="%X{st}" %msg%n</Pattern>
+    </encoder>
+  </appender>
+  <root level="info">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+</configuration>
