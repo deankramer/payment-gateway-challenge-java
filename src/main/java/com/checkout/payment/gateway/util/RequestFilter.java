@@ -1,5 +1,6 @@
 package com.checkout.payment.gateway.util;
 
+import static com.checkout.payment.gateway.util.LoggerContext.*;
 import static com.checkout.payment.gateway.util.LoggerContext.Direction.IN;
 import static com.checkout.payment.gateway.util.LoggerContext.setRequestContext;
 import static com.checkout.payment.gateway.util.LoggerContext.setResponseContext;
@@ -36,5 +37,6 @@ public class RequestFilter implements Filter {
     var response = (HttpServletResponse) servletResponse;
     setResponseContext(method, IN, response.getStatus());
     logger.info(path);
+    clear();
   }
 }

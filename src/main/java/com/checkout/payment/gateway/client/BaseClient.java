@@ -92,6 +92,7 @@ public class BaseClient {
     var response = client.exchange(baseUrl + path, method, entity(request), responseType, uriVariables);
     var status = response.getStatusCode().value();
     setResponseContext(httpMethod, OUT, status);
+    LOG.info(path);
     if (response.getStatusCode().value() >= 300) {
       throw new ClientException(path, status, maybe(response.getBody(), Object::toString));
     }

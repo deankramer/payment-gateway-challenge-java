@@ -38,7 +38,7 @@ public class LoggerContext {
   }
 
   public static LoggerContext  setRequestContext(String method, Direction direction) {
-    var context = new LoggerContext(UUID.randomUUID().toString());
+    var context = getCurrentOrNewContext();
     setContext(
         to("ty", "REQ"),
         to("rty", direction.name()),

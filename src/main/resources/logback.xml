@@ -5,7 +5,7 @@
     <prudent>${PRUDENT}</prudent>
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <charset>UTF-8</charset>
-      <Pattern>%d{ISO8601} CR="%X{cr}" LN="%logger{10}" TY="%X{ty}" MD="%X{mthd}" ST="%X{st}" %msg%n</Pattern>
+      <Pattern>%d{ISO8601} CR="%X{cr}" LN="%logger{10}" RTY="%X{rty}" TY="%X{ty}" MD="%X{mthd}" ST="%X{st}" %msg%n</Pattern>
     </encoder>
   </appender>
   <root level="info">
