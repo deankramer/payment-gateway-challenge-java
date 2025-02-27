@@ -44,6 +44,10 @@ public class PostPaymentRequest implements Serializable {
     this.cardNumber = cardNumber;
   }
 
+  public String getLastFour() {
+    return cardNumber.substring(cardNumber.length() - 4);
+  }
+
   public int getExpiryMonth() {
     return expiryMonth;
   }
@@ -60,8 +64,8 @@ public class PostPaymentRequest implements Serializable {
     this.expiryYear = expiryYear;
   }
 
-  public Currency getCurrency() {
-    return currency;
+  public String getCurrency() {
+    return currency.getAlpha();
   }
 
   public void setCurrency(String currency) {
@@ -95,7 +99,7 @@ public class PostPaymentRequest implements Serializable {
         "cardNumber=" + cardNumber +
         ", expiryMonth=" + expiryMonth +
         ", expiryYear=" + expiryYear +
-        ", currency='" + currency + '\'' +
+        ", currency='" + currency.getAlpha() + '\'' +
         ", amount=" + amount +
         ", cvv=" + cvv +
         '}';

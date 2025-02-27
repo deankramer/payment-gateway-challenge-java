@@ -2,6 +2,10 @@ package com.checkout.payment.gateway.exception;
 
 import com.checkout.payment.gateway.model.ErrorResponse;
 import com.checkout.payment.gateway.model.ErrorsResponse;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -49,6 +53,9 @@ public class CommonExceptionHandler {
 
   @ExceptionHandler(ConstraintViolationException.class)
   @ResponseStatus(BAD_REQUEST)
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content(schema = @Schema(implementation = ErrorsResponse.class)))
+  })
   public @ResponseBody
   ResponseEntity<ErrorResponse> validationError(ConstraintViolationException ex) {
     var violations = ex.getConstraintViolations();
@@ -64,6 +71,9 @@ public class CommonExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseBody
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content(schema = @Schema(implementation = ErrorsResponse.class)))
+  })
   public ResponseEntity<ErrorResponse> validationError(MethodArgumentNotValidException ex) {
     var fieldErrorList = new ArrayList<ErrorsResponse.FieldError>();
     var errorList = new ArrayList<String>();
