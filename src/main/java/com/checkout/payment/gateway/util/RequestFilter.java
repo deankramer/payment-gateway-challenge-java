@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RequestFilter implements Filter {
 
-  private static final Logger logger = getLogger(RequestFilter.class);
+  private static final Logger LOG = getLogger(RequestFilter.class);
 
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
@@ -32,11 +32,11 @@ public class RequestFilter implements Filter {
     var path = request.getRequestURI();
     var method = request.getMethod();
     var context = setRequestContext(method, IN);
-    logger.info(path);
+    LOG.info(path);
     filterChain.doFilter(servletRequest, servletResponse);
     var response = (HttpServletResponse) servletResponse;
     setResponseContext(method, IN, response.getStatus());
-    logger.info(path);
+    LOG.info(path);
     clear();
   }
 }

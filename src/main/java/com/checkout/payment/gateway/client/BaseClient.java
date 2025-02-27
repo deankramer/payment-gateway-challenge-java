@@ -1,6 +1,7 @@
 package com.checkout.payment.gateway.client;
 
 import com.checkout.payment.gateway.exception.ClientException;
+import com.checkout.payment.gateway.util.LoggerContext;
 import com.checkout.payment.gateway.util.Util.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +105,7 @@ public class BaseClient {
     for (var entry : defaultHeaders.entrySet()) {
       headers.add(entry.getKey(), entry.getValue());
     }
+    headers.add("X-Correlation-Id", LoggerContext.getContext("cr"));
     return request == null ? new HttpEntity<>(headers) : new HttpEntity<>(request, headers);
   }
 
