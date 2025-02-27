@@ -7,14 +7,9 @@ import static java.util.UUID.*;
 public class AcquirerMockClient implements AcquirerClient {
 
   private boolean authorized = true;
-  private boolean healthy = true;
 
   public void setAuthorized(boolean authorized) {
     this.authorized = authorized;
-  }
-
-  public void setHealthy(boolean healthy) {
-    this.healthy = healthy;
   }
 
   @Override
@@ -25,8 +20,4 @@ public class AcquirerMockClient implements AcquirerClient {
         new AcquirerPaymentResponse(false, null);
   }
 
-  @Override
-  public boolean healthCheck() {
-    return healthy;
-  }
 }

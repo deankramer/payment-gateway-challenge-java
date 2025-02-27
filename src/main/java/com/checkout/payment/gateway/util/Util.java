@@ -2,6 +2,8 @@ package com.checkout.payment.gateway.util;
 
 public class Util {
 
+  public interface F<R> { R x(); }
+  public interface FX<R> { R x() throws Exception; }
   public interface F1<R, T1> { R x(T1 t1); }
 
   public static class Field<K, V> {
@@ -20,6 +22,14 @@ public class Util {
 
   public static <T, R> R maybe(T t, F1<R, T> f) {
     return t == null ? null : f.x(t);
+  }
+
+  public static <T> T xf(FX<T> f) {
+    try {
+      return f.x();
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
+    }
   }
 
 }

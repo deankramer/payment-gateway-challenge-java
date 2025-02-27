@@ -15,6 +15,5 @@ public interface AcquirerClient {
       int amount) {}
 
   AcquirerPaymentResponse processPayment(AcquirerPaymentRequest request);
-  boolean healthCheck();
 
 }

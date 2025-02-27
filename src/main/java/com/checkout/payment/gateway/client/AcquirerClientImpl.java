@@ -17,9 +17,4 @@ public class AcquirerClientImpl extends BaseClient implements AcquirerClient {
     return post(PAYMENTS, request, AcquirerPaymentResponse.class);
   }
 
-  @Override
-  public boolean healthCheck() {
-    return false;
-  }
-
 }
