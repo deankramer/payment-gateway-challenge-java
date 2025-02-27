@@ -1,6 +1,7 @@
 package com.checkout.payment.gateway.model;
 
 import com.checkout.payment.gateway.util.Currency;
+import com.checkout.payment.gateway.validation.annotations.ValidAmount;
 import com.checkout.payment.gateway.validation.annotations.ValidCvv;
 import com.checkout.payment.gateway.validation.annotations.ValidMonth;
 import com.checkout.payment.gateway.validation.annotations.ValidPan;
@@ -30,7 +31,7 @@ public class PostPaymentRequest implements Serializable {
   @NotNull(message = INVALID)
   private Currency currency;
 
-  @NotNull(message = INVALID)
+  @ValidAmount(message = INVALID)
   private int amount;
 
   @ValidCvv(message = INVALID)

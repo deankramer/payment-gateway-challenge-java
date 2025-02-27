@@ -29,7 +29,8 @@ public class ValidatorTests {
   @ParameterizedTest
   @ValueSource(strings = {"", "1234", "1234567890123", "12345678901234567890"})
   public void whenCardNumberIsValidatedInvalid(String cardNumber) {
-    var violations = testCardNumber(cardNumber);
+    var now = now();
+    var violations = validatePayment(cardNumber, now.getMonthValue(), now.getYear(), "123", "USD", 100);
     assertEquals(1, violations.size());
     assertEquals(INVALID, violations.iterator().next().getMessage());
   }
@@ -37,14 +38,16 @@ public class ValidatorTests {
   @ParameterizedTest
   @ValueSource(strings = {"40000000000002", "50000000000009", "5045670000000006", "4042424242424242422"})
   public void whenCardNumberIsValidatedValid(String cardNumber) {
-    var violations = testCardNumber(cardNumber);
+    var now = now();
+    var violations = validatePayment(cardNumber, now.getMonthValue(), now.getYear(), "123", "USD", 100);
     assertEquals(0, violations.size());
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"", "12", "a", "1a21", "12345"})
   public void whenCvvIsValidatedInvalid(String cvv) {
-    var violations = testCvv(cvv);
+    var now = now();
+    var violations = validatePayment("40000000000002", now.getMonthValue(), now.getYear(), cvv, "USD", 100);
     assertEquals(1, violations.size());
     assertEquals(INVALID, violations.iterator().next().getMessage());
   }
@@ -52,14 +55,16 @@ public class ValidatorTests {
   @ParameterizedTest
   @ValueSource(strings = {"123", "1234"})
   public void whenCvvIsValidatedValid(String cvv) {
-    var violations = testCvv(cvv);
+    var now = now();
+    var violations = validatePayment("40000000000002", now.getMonthValue(), now.getYear(), cvv, "USD", 100);
     assertEquals(0, violations.size());
   }
 
   @ParameterizedTest
   @ValueSource(ints = {-1, 13, 100})
   public void whenMonthIsValidatedInvalid(int month) {
-    var violations = testMonth(month);
+    var now = now();
+    var violations = validatePayment("40000000000002", month, now.getYear(), "123", "USD", 100);
     assertEquals(1, violations.size());
     assertEquals(INVALID, violations.iterator().next().getMessage());
   }
@@ -67,21 +72,57 @@ public class ValidatorTests {
   @ParameterizedTest
   @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12})
   public void whenMonthIsValidatedValid(int month) {
-    var violations = testMonth(month);
+    var now = now();
+    //Increment year to avoid invalid expiry date violation
+    var violations = validatePayment("40000000000002", month, now.getYear()+1, "123", "USD", 100);
     assertEquals(0, violations.size());
   }
 
   @ParameterizedTest
   @ValueSource(ints = {1900, 1950, 2000, 2020, 2024})
   public void whenYearIsValidatedInvalid(int year) {
-    var violations = testYear(year);
+    var now = now();
+    var violations = validatePayment("40000000000002", now.getMonthValue(), year, "123", "USD", 100);
     assertEquals(1, violations.size());
   }
 
   @ParameterizedTest
   @ValueSource(ints = {2025, 2026, 2027, 2028})
   public void whenYearIsValidatedValid(int year) {
-    var violations = testYear(year);
+    var now = now();
+    var violations = validatePayment("40000000000002", now.getMonthValue(), year, "123", "USD", 100);
+    assertEquals(0, violations.size());
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {-100, -1, 0})
+  public void whenAmountIsValidatedInvalid(int amount) {
+    var now = now();
+    var violations = validatePayment("40000000000002", now.getMonthValue(), now.getYear(), "123", "USD", amount);
+    assertEquals(1, violations.size());
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {1, 100, 1000, 10000})
+  public void whenAmountIsValidatedValid(int amount) {
+    var now = now();
+    var violations = validatePayment("40000000000002", now.getMonthValue(), now.getYear(), "123", "USD", amount);
+    assertEquals(0, violations.size());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"AUD", "CZK", "NOK"})
+  public void whenCurrencyIsValidatedInvalid(String currency) {
+    var now = now();
+    var violations = validatePayment("40000000000002", now.getMonthValue(), now.getYear(), "123", currency, 100);
+    assertEquals(1, violations.size());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"USD", "GBP", "EUR"})
+  public void whenCurrencyIsValidatedValid(String currency) {
+    var now = now();
+    var violations = validatePayment("40000000000002", now.getMonthValue(), now.getYear(), "123", currency, 100);
     assertEquals(0, violations.size());
   }
 
@@ -100,52 +141,14 @@ public class ValidatorTests {
   public void testUUID(@ValidUUID String uuid) {
   }
 
-  private Set<ConstraintViolation<PostPaymentRequest>> testCardNumber(String cardNumber) {
-    var currentDate = now();
-    var testPaymentRequest = createPaymentRequestDTO(
-        cardNumber,
-        currentDate.getMonthValue(),
-        currentDate.getYear(),
-        "123",
-        "USD",
-        100);
-    return validator.validate(testPaymentRequest);
-  }
-
-  private Set<ConstraintViolation<PostPaymentRequest>> testCvv(String cvv) {
-    var currentDate = now();
-    var testPaymentRequest = createPaymentRequestDTO(
-        "4000000000000002",
-        currentDate.getMonthValue(),
-        currentDate.getYear(),
-        cvv,
-        "USD",
-        100);
-    return validator.validate(testPaymentRequest);
-  }
-
-  private Set<ConstraintViolation<PostPaymentRequest>> testMonth(int month) {
-    var currentDate = now();
-    var testPaymentRequest = createPaymentRequestDTO(
-        "4000000000000002",
-        month,
-        currentDate.getYear() + 1,
-        "123",
-        "USD",
-        100);
-    return validator.validate(testPaymentRequest);
-  }
-
-  private Set<ConstraintViolation<PostPaymentRequest>> testYear(int year) {
-    var currentDate = now();
-    var testPaymentRequest = createPaymentRequestDTO(
-        "4000000000000002",
-        currentDate.getMonthValue(),
-        year,
-        "123",
-        "USD",
-        100);
-    return validator.validate(testPaymentRequest);
+  private Set<ConstraintViolation<PostPaymentRequest>> validatePayment(
+          String cardNumber,
+          int expiryMonth,
+          int expiryYear,
+          String cvv,
+          String currency,
+          int amount) {
+    return validator.validate(createPaymentRequestDTO(cardNumber, expiryMonth, expiryYear, cvv, currency, amount));
   }
 
   private void testUUID(String uuid, int expectedViolations) {
