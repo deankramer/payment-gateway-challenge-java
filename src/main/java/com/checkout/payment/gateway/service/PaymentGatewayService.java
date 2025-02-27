@@ -32,16 +32,16 @@ public class PaymentGatewayService {
   }
 
   public PostPaymentResponse getPaymentById(UUID id) {
-    LOG.debug("Requesting access to to payment ID: {}", id);
+    LOG.debug("Requesting access to payment ID: {}", id);
     return paymentsRepository.get(id).orElseThrow(() -> new MissingEntityException(PAYMENT_NOT_FOUND));
   }
 
   public PostPaymentResponse processPayment(PostPaymentRequest paymentRequest) {
     var paymentId = UUID.randomUUID();
-    LOG.debug("Processing Payment request ID: {}", paymentId);
+    LOG.debug("Processing payment request ID: {}", paymentId);
     var acquirerResponse = acquirerClient.processPayment(mapToAcquirerPaymentRequest(paymentRequest));
     var paymentResponse = mapToPostPaymentResponse(paymentId, acquirerResponse, paymentRequest);
-    LOG.debug("Payment request ID: {} Status: {}", paymentId, paymentResponse.getStatus());
+    LOG.debug("Payment ID: {} Status: {}", paymentId, paymentResponse.getStatus());
     paymentsRepository.add(paymentResponse);
     return paymentResponse;
   }
