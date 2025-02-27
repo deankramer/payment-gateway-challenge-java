@@ -22,11 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
 public class CommonExceptionHandler {
 
+  public static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error";
   public static final String INVALID = "Invalid request";
   public static final String PAYMENT_NOT_FOUND = "Payment not found";
 
@@ -88,6 +90,15 @@ public class CommonExceptionHandler {
     });
 
     return new ResponseEntity<>(new ErrorsResponse(INVALID, fieldErrorList, errorList), BAD_REQUEST);
+  }
+
+  @ExceptionHandler(Throwable.class)
+  @ResponseStatus(INTERNAL_SERVER_ERROR)
+  public @ResponseBody
+  ResponseEntity<ErrorResponse> handleException(Throwable t) {
+    LOG.error(INTERNAL_SERVER_ERROR_MESSAGE, t);
+    return new ResponseEntity<>(new ErrorResponse(INTERNAL_SERVER_ERROR_MESSAGE),
+        INTERNAL_SERVER_ERROR);
   }
 
 
