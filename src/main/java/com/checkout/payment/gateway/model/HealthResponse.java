@@ -1,9 +1,13 @@
 package com.checkout.payment.gateway.model;
 
-public class HealthResponse {
+import java.io.Serializable;
+
+public class HealthResponse implements Serializable {
   private boolean dbStatus;
   private boolean acquirerStatus;
 
+  public HealthResponse() {
+  }
 
   public HealthResponse(boolean dbStatus, boolean acquirerStatus) {
     this.dbStatus = dbStatus;

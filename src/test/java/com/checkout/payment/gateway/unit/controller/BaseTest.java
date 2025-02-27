@@ -1,11 +1,13 @@
 package com.checkout.payment.gateway.unit.controller;
 
-import com.checkout.payment.gateway.model.PostPaymentRequest;
+import static com.checkout.payment.gateway.gen.Gen.createPaymentRequest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.checkout.payment.gateway.model.PostPaymentResponse;
 import com.checkout.payment.gateway.repository.PaymentsRepository;
 import com.checkout.payment.gateway.unit.Configuration;
 import com.checkout.payment.gateway.unit.client.AcquirerMockClient;
-import com.checkout.payment.gateway.util.Currency;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,7 +28,6 @@ public class BaseTest {
 
   @Autowired
   AcquirerMockClient acquirerClient;
-
 
   protected PostPaymentResponse createAndCheckPayment() throws Exception {
     var request = createPaymentRequest();
@@ -46,19 +43,6 @@ public class BaseTest {
     assertEquals(request.getExpiryYear(), response.getExpiryYear());
     assertEquals(request.getLastFour(), response.getCardNumberLastFour());
     return fromJsonBody(result.getResponse().getContentAsString(), PostPaymentResponse.class);
-  }
-
-
-  protected static PostPaymentRequest createPaymentRequest() {
-    var now = LocalDateTime.now();
-    var paymentRequest = new PostPaymentRequest();
-    paymentRequest.setCardNumber("4242424242424242");
-    paymentRequest.setCvv("123");
-    paymentRequest.setExpiryMonth(now.getMonthValue());
-    paymentRequest.setExpiryYear(now.getYear());
-    paymentRequest.setAmount(100);
-    paymentRequest.setCurrency(Currency.GREAT_BRITISH_POUND.getAlpha());
-    return paymentRequest;
   }
 
   protected <T> T fromJsonBody(String body, Class<T> clazz) throws Exception {

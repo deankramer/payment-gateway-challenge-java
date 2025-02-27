@@ -1,9 +1,10 @@
 package com.checkout.payment.gateway.model;
 
 import com.checkout.payment.gateway.enums.PaymentStatus;
+import java.io.Serializable;
 import java.util.UUID;
 
-public class GetPaymentResponse {
+public class GetPaymentResponse implements Serializable {
   private UUID id;
   private PaymentStatus status;
   private int cardNumberLastFour;

@@ -2,6 +2,8 @@ package com.checkout.payment.gateway.util;
 
 public class Util {
 
+  public interface A { void x(); }
+
   public interface F<R> { R x(); }
   public interface FX<R> { R x() throws Exception; }
   public interface F1<R, T1> { R x(T1 t1); }

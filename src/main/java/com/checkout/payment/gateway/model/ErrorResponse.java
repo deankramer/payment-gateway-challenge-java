@@ -1,6 +1,8 @@
 package com.checkout.payment.gateway.model;
 
-public class ErrorResponse {
+import java.io.Serializable;
+
+public class ErrorResponse implements Serializable {
   private final String message;
 
   public ErrorResponse(String message) {
