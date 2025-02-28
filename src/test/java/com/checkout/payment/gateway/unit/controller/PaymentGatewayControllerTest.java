@@ -1,15 +1,18 @@
 package com.checkout.payment.gateway.unit.controller;
 
-import static com.checkout.payment.gateway.enums.PaymentStatus.*;
+import static com.checkout.payment.gateway.enums.PaymentStatus.AUTHORIZED;
+import static com.checkout.payment.gateway.enums.PaymentStatus.DECLINED;
+import static com.checkout.payment.gateway.exception.CommonExceptionHandler.INVALID_REQUEST;
 import static com.checkout.payment.gateway.exception.CommonExceptionHandler.PAYMENT_NOT_FOUND;
+import static com.checkout.payment.gateway.model.PostPaymentRequest.INVALID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.checkout.payment.gateway.model.PostPaymentRequest;
 import com.checkout.payment.gateway.model.PostPaymentResponse;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 
@@ -57,6 +60,24 @@ class PaymentGatewayControllerTest extends BaseTest {
     acquirerClient.setAuthorized(false);
     var response = createAndCheckPayment();
     assertEquals(DECLINED, response.getStatus());
+  }
+
+  @Test
+  void whenPaymentIsRejectedThen400IsReturned() throws Exception {
+    var paymentRequest = new PostPaymentRequest();
+    paymentRequest.setCardNumber("2");
+    paymentRequest.setCvv("123");
+    paymentRequest.setExpiryMonth(1);
+    paymentRequest.setExpiryYear(2026);
+    paymentRequest.setAmount(100);
+    paymentRequest.setCurrency("GBP");
+    mvc.perform(MockMvcRequestBuilders.post("/payment")
+            .contentType("application/json")
+            .content(toJsonBody(paymentRequest)))
+        .andExpect(jsonPath("$.message").value(INVALID_REQUEST))
+        .andExpect(jsonPath("$.fields[0].field").value("cardNumber"))
+        .andExpect(jsonPath("$.fields[0].message").value(INVALID))
+        .andExpect(status().is4xxClientError());
   }
 
 }

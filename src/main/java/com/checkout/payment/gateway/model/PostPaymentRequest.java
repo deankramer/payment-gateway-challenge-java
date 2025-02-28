@@ -1,17 +1,17 @@
 package com.checkout.payment.gateway.model;
 
+import static com.checkout.payment.gateway.model.PostPaymentRequest.INVALID_EXPIRY_DATE;
+
 import com.checkout.payment.gateway.util.Currency;
 import com.checkout.payment.gateway.validation.annotations.ValidAmount;
 import com.checkout.payment.gateway.validation.annotations.ValidCvv;
+import com.checkout.payment.gateway.validation.annotations.ValidExpiryDate;
 import com.checkout.payment.gateway.validation.annotations.ValidMonth;
 import com.checkout.payment.gateway.validation.annotations.ValidPan;
-import com.checkout.payment.gateway.validation.annotations.ValidExpiryDate;
 import com.checkout.payment.gateway.validation.annotations.ValidYear;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
-
-import static com.checkout.payment.gateway.model.PostPaymentRequest.INVALID_EXPIRY_DATE;
 
 @ValidExpiryDate(message = INVALID_EXPIRY_DATE)
 public class PostPaymentRequest implements Serializable {
@@ -45,6 +45,7 @@ public class PostPaymentRequest implements Serializable {
     this.cardNumber = cardNumber;
   }
 
+  @JsonIgnore
   public String getLastFour() {
     return cardNumber.substring(cardNumber.length() - 4);
   }

@@ -2,14 +2,13 @@ package com.checkout.payment.gateway.integration;
 
 import com.checkout.payment.gateway.client.GatewayClient;
 import com.checkout.payment.gateway.client.GatewayClientImpl;
+import com.checkout.payment.gateway.enums.PaymentStatus;
 import com.checkout.payment.gateway.gen.Gen;
 import com.checkout.payment.gateway.model.PostPaymentResponse;
 import org.springframework.web.client.RestTemplate;
 
 import static com.checkout.payment.gateway.util.TestUtil.section;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Integration {
 
@@ -50,6 +49,7 @@ public class Integration {
     assertEquals(paymentRequest.getAmount(), paymentResponse.getAmount());
     assertEquals(paymentRequest.getCurrency(), paymentResponse.getCurrency());
     assertEquals(paymentRequest.getLastFour(), paymentResponse.getCardNumberLastFour());
+    assertEquals(PaymentStatus.AUTHORIZED, paymentResponse.getStatus());
     return paymentResponse;
   }
 

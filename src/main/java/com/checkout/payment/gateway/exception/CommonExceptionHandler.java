@@ -1,13 +1,18 @@
 package com.checkout.payment.gateway.exception;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import com.checkout.payment.gateway.model.ErrorResponse;
 import com.checkout.payment.gateway.model.ErrorsResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import java.util.ArrayList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +23,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 @ControllerAdvice
 public class CommonExceptionHandler {
 
   public static final String INTERNAL_SERVER_ERROR_MESSAGE = "Internal server error";
-  public static final String INVALID = "Invalid request";
+  public static final String INVALID_REQUEST = "Invalid request";
   public static final String PAYMENT_NOT_FOUND = "Payment not found";
 
   private static final Logger LOG = LoggerFactory.getLogger(CommonExceptionHandler.class);
@@ -50,7 +48,7 @@ public class CommonExceptionHandler {
   @ExceptionHandler(MissingEntityException.class)
   public ResponseEntity<ErrorResponse> handleException(MissingEntityException ex) {
     LOG.error("Entity not found", ex);
-    return new ResponseEntity<>(new ErrorsResponse(INVALID, List.of(), List.of(ex.getMessage())), NOT_FOUND);
+    return new ResponseEntity<>(new ErrorsResponse(INVALID_REQUEST, List.of(), List.of(ex.getMessage())), NOT_FOUND);
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
@@ -68,7 +66,7 @@ public class CommonExceptionHandler {
       var message = error.getMessage();
       fieldErrorList.add(new ErrorsResponse.FieldError(field, message));
     });
-    return new ResponseEntity<>(new ErrorsResponse(INVALID, fieldErrorList, errorList), BAD_REQUEST);
+    return new ResponseEntity<>(new ErrorsResponse(INVALID_REQUEST, fieldErrorList, errorList), BAD_REQUEST);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -89,7 +87,7 @@ public class CommonExceptionHandler {
       }
     });
 
-    return new ResponseEntity<>(new ErrorsResponse(INVALID, fieldErrorList, errorList), BAD_REQUEST);
+    return new ResponseEntity<>(new ErrorsResponse(INVALID_REQUEST, fieldErrorList, errorList), BAD_REQUEST);
   }
 
   @ExceptionHandler(Throwable.class)
