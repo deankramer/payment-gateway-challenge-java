@@ -1,10 +1,12 @@
 package com.checkout.payment.gateway.validation.validators;
 
+import static java.time.LocalDate.now;
+import static java.time.LocalDate.of;
+
 import com.checkout.payment.gateway.model.PostPaymentRequest;
 import com.checkout.payment.gateway.validation.annotations.ValidExpiryDate;
 import jakarta.validation.ConstraintValidator;
 
-import static java.time.LocalDateTime.*;
 
 public class ExpiryDateValidator implements ConstraintValidator<ValidExpiryDate, PostPaymentRequest> {
 
@@ -17,10 +19,10 @@ public class ExpiryDateValidator implements ConstraintValidator<ValidExpiryDate,
     if (year < 2025 || month < 1 || month > 12) {
       return true;
     }
-    var cardDate = of(postPaymentRequest.getExpiryYear(), postPaymentRequest.getExpiryMonth(), 1, 0, 0)
+    var cardDate = of(postPaymentRequest.getExpiryYear(), postPaymentRequest.getExpiryMonth(), 1)
         .plusMonths(1)
         .minusDays(1);
-    return cardDate.isAfter(now());
+    return !now().isAfter(cardDate);
   }
 
 }
