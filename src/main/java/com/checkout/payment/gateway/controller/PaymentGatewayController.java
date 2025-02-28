@@ -3,9 +3,9 @@ package com.checkout.payment.gateway.controller;
 import com.checkout.payment.gateway.model.PostPaymentRequest;
 import com.checkout.payment.gateway.model.PostPaymentResponse;
 import com.checkout.payment.gateway.service.PaymentGatewayService;
-import java.util.UUID;
-import com.checkout.payment.gateway.validation.annotations.ValidUUID;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +34,10 @@ public class PaymentGatewayController {
 
   @GetMapping("/{id}")
   public ResponseEntity<PostPaymentResponse> getPostPaymentEventById(
+      @Parameter(
+          name = "id",
+          description = "Payment id",
+          example = "19f3c9f1-1384-45c2-ac36-b41f90111446")
       @PathVariable UUID id) {
     return new ResponseEntity<>(paymentGatewayService.getPaymentById(id), HttpStatus.OK);
   }
